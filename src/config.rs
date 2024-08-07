@@ -6,12 +6,30 @@ use std::env;
 #[allow(unused)]
 pub struct AppConfig {
     pub http: HttpConfig,
+    pub influx: InfluxDB,
+    pub measurement_points: Vec<TemperaturePoint>,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct HttpConfig {
     pub listen_address: String,
     pub listen_port: u16,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct InfluxDB {
+    pub url: String,
+    pub port: String,
+    pub db: String,
+    pub user: String,
+    pub password: String,
+    pub id: String,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct TemperaturePoint {
+    pub sensor_id: String,
+    pub name: String,
 }
 
 pub fn read_config() -> AppConfig {

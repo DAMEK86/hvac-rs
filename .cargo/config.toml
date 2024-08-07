@@ -8,3 +8,7 @@ rustflags = [
     # "-C", "target-feature=+crt-static", # Uncomment me to force static compilation
     #"-C", "panic=abort", # Uncomment me to avoid compiling in panics
 ]
+
+# TODO: fix riscv sdk
+[env]
+CC_riscv64gc-unknown-linux-musl = "/home/andreas/embedded/duo-buildroot-sdk/host-tools/gcc/riscv64-linux-musl-x86_64/bin/riscv64-unknown-linux-musl-gcc"
