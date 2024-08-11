@@ -21,26 +21,32 @@ async fn main() {
     let influx_client: Arc<influx_db_client::Client> =
         Arc::new(get_infux_db_client(&cfg.influx).unwrap());
 
-    let sensor_id = std::env::args().nth(1).expect("sensor ID required");
     let influx_id = cfg.influx.id.to_string();
-    let point_name = cfg.measurement_points[0].clone().name;
+    let delta_t_sec = cfg.influx.delta_t_sec;
+
+    let mut sensors: Vec<Ds18b20> = Vec::new();
+    for measurement_point in &cfg.measurement_points {
+        sensors.push(
+            Ds18b20::new(
+                measurement_point.sensor_id.clone(),
+                measurement_point.name.clone(),
+            )
+            .unwrap(),
+        )
+    }
+
     tokio::spawn(async move {
-        let sensor = Ds18b20::new(sensor_id);
-        match sensor {
-            Ok(s) => loop {
+        loop {
+            let mut data: Vec<(&str, f64)> = Vec::new();
+            for s in &sensors {
                 if let Ok(temp) = s.read_temp() {
                     let temp_celsius = temp.to_celsius();
-                    let _ = write_data_with_point_name(
-                        &influx_client,
-                        &influx_id,
-                        vec![(point_name.as_str(), temp_celsius.clone())],
-                    )
-                    .await;
-                    log::info!("Temp: {} °C", temp_celsius)
+                    data.push((s.name.as_str(), temp_celsius));
+                    log::info!("{}: {} °C", s.name.as_str(), temp_celsius)
                 }
-                sleep(Duration::from_secs(2)).await;
-            },
-            Err(e) => log::error!("{:?}", e),
+            }
+            let _ = write_data_with_point_name(&influx_client, &influx_id, data).await;
+            sleep(Duration::from_secs(delta_t_sec)).await;
         }
     });
 

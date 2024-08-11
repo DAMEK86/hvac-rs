@@ -24,6 +24,7 @@ pub struct InfluxDB {
     pub user: String,
     pub password: String,
     pub id: String,
+    pub delta_t_sec: u64,
 }
 
 #[derive(Clone, Serialize, Deserialize)]

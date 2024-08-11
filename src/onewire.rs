@@ -38,14 +38,18 @@ impl Temperature {
 
 pub struct Ds18b20 {
     identifier: String,
+    pub name: String,
 }
 
 impl Ds18b20 {
-    pub fn new(id: String) -> Result<Self, W1Error> {
+    pub fn new(id: String, name: String) -> Result<Self, W1Error> {
         if !id.starts_with(DS18B20_IDENTIFIER) {
             return Err(W1Error::UnsupportedId);
         }
-        return Ok(Ds18b20 { identifier: id });
+        Ok(Ds18b20 {
+            identifier: id,
+            name,
+        })
     }
 
     pub fn read_raw(&self) -> io::Result<String> {

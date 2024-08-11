@@ -9,7 +9,16 @@ db = "homeassistant"
 user = "root"
 password = ""
 id = "heatpump"
+delta_t_sec = 10
 
 [[measurement_points]]
 sensor_id = "28-3ce1e3806031"
+name = "BufferLow"
+
+[[measurement_points]]
+sensor_id = "28-3ce1e3805fbe"
+name = "CirculationPumpIn"
+
+[[measurement_points]]
+sensor_id = "28-3ce1e38083ed"
 name = "CirculationPumpOut"

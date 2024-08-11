@@ -6,8 +6,7 @@ mod health;
 
 pub async fn start_server(cfg: AppConfig) {
     let addr = format!("{}:{}", cfg.http.listen_address, cfg.http.listen_port);
-    let app = Router::new()
-        .nest("/", health::create_router(cfg.clone()));
+    let app = Router::new().nest("/", health::create_router(cfg.clone()));
 
     let listener: TcpListener = match TcpListener::bind(&addr).await {
         Ok(l) => l,
